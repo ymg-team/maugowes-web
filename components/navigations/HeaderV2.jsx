@@ -31,7 +31,7 @@ const HeaderStyled = Styled.header`
     transition: top .5 ease;
     border-bottom: 1px solid ${color_gray_medium};
     margin-bottom: 50px;
-    padding: 5px 0 10px;
+    padding: 10px 0 5px;
     font-size: 15px;
     top: inherit;
 

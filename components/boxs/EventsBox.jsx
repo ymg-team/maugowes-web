@@ -70,9 +70,9 @@ const EventsBox = (props) => {
                   checked={query.show_all || 0}
                   onChange={() => {
                     query.show_all = query.show_all ? 0 : 1
-                    props.setState({ query })
+                    props.setState(query)
                     // ref : https://github.com/zeit/next.js/#userouter
-                    Router.push({
+                    return Router.push({
                       pathname: "/events",
                       query,
                     })
@@ -116,7 +116,7 @@ const EventsBox = (props) => {
       !is_loading &&
       status === 200 &&
       results &&
-      results.length > total ? (
+      results.length < total ? (
         <div className="grid-center" style={{ margin: "20px 0 40px" }}>
           <Button
             type="button"

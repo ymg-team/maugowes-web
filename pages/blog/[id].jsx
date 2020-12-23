@@ -335,7 +335,7 @@ const BlogDetail = ({ id, dispatch, blog }) => {
               <div className="grid-center">
                 {blogData.video ? (
                   <div className="blog-detail_video">
-                    <iframe src={blogData.video} />
+                    <iframe src={`${blogData.video}?autoplay=1`} />
                   </div>
                 ) : (
                   <div className="blog-detail_main-image">

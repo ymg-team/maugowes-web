@@ -4,16 +4,7 @@ import Table from "../tables/TableWrapper"
 import Loader from "../../Loader"
 import EventRow from "../tables/rows/EventRow"
 
-// function generateStats(results, total) {
-//   return (
-//     <React.Fragment>
-//       Menampilkan <strong>{results.length || 0}</strong> dari{" "}
-//       <strong>{total}</strong> post
-//     </React.Fragment>
-//   )
-// }
-
-export default props => {
+export default (props) => {
   const { results, status, is_loading, total } = props.data
 
   return (

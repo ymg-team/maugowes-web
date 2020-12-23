@@ -1,4 +1,4 @@
-import React from "react"
+import { useEffect, useState } from "react"
 import Styled from "styled-components"
 import { connect } from "react-redux"
 import { nl2br, toSlug } from "string-manager"
@@ -73,220 +73,225 @@ function getId(title) {
   return titleArr[titleArr.length - 1]
 }
 
-class VideoDetail extends React.Component {
-  static async getInitialProps({ req, reduxStore, query }) {
-    if (req) {
-      const id = getId(query.id)
-      await reduxStore.dispatch(fetchVideoDetail(id))
-    }
+const VideoDetail = (props) => {
+  const [windowReady, setWindowReady] = useState(false)
 
-    return { id: query.id }
+  const id = getId(props.id)
+  const data = props.videos[id] || {}
+  const relatedData = props.videos.related || {}
+
+  useEffect(() => {
+    // same as componentDidMount
+    if (typeof window !== "undefined" && !windowReady) {
+      setWindowReady(true)
+      // fetch video detail from api
+      if (!data.status) {
+        props.dispatch(fetchVideoDetail(id))
+      }
+      // fetch video related
+      const videoRelatedState = props.videos.related || {}
+
+      if (!videoRelatedState.status) {
+        progressBar.start()
+        props.dispatch(
+          fetchVideos("related", {
+            limit: 4,
+            page: 1,
+            notId: getId(props.id),
+          })
+        )
+      }
+    }
+  }, [])
+
+  // handle on change id / change video detail
+  useEffect(() => {
+    if (!data.status) {
+      props.dispatch(fetchVideoDetail(id))
+    }
+  }, [id])
+
+  const BreadcrumbData = [
+    {
+      link: "/",
+      title: "Home",
+    },
+    {
+      link: "/videos",
+      title: "Videos",
+    },
+  ]
+
+  if (data.status) {
+    BreadcrumbData.push({
+      title: data.title,
+      link: `/videos/${toSlug(data.title)}-${data._id}`,
+    })
+    progressBar.stop()
   }
 
-  state = {}
+  let metadata = {}
 
-  componentDidMount() {
-    this.setState({ windowReady: true })
-
-    this.fetchVideoDetail()
-
-    const videoRelatedState = this.props.videos.related || {}
-
-    if (!videoRelatedState.status) {
-      progressBar.start()
-      this.props.dispatch(
-        fetchVideos("related", {
-          limit: 4,
-          page: 1,
-          notId: getId(this.props.id),
-        })
-      )
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.id != this.props.id) {
-      return this.fetchVideoDetail()
-    }
-  }
-
-  fetchVideoDetail() {
-    const id = getId(this.props.id)
-    const videoDetail = this.props.videos.id || {}
-
-    if (!videoDetail.status) {
-      this.props.dispatch(fetchVideoDetail(id))
-    }
-  }
-
-  render() {
-    const id = getId(this.props.id)
-    const data = this.props.videos[id] || {}
-    const relatedData = this.props.videos.related || {}
-
-    const BreadcrumbData = [
-      {
-        link: "/",
-        title: "Home",
-      },
-      {
-        link: "/videos",
-        title: "Videos",
-      },
-    ]
-
-    if (data.status) {
-      BreadcrumbData.push({
-        title: data.title,
-        link: `/videos/${toSlug(data.title)}-${data._id}`,
-      })
-      progressBar.stop()
-    }
-
-    let metadata = {}
-
-    if (data && data.status == 200) {
-      metadata = {
-        title: data.title,
-        description: data.description,
+  if (data && data.status == 200) {
+    metadata = {
+      title: data.title,
+      description: data.description,
+      image: data.thumbnails.high,
+      keywords: "video,maugowes,youtube",
+      jsonld: {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: data.title,
+        alternativeHeadline: data.title,
         image: data.thumbnails.high,
+        genre: "cycling,bicycle,sepeda,gowes",
         keywords: "video,maugowes,youtube",
-        jsonld: {
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          headline: data.title,
-          alternativeHeadline: data.title,
-          image: data.thumbnails.high,
-          genre: "cycling,bicycle,sepeda,gowes",
-          keywords: "video,maugowes,youtube",
-          wordcount: data.description.length,
-          publisher: {
-            "@type": "Organization",
-            name: "Mau Gowes",
-            logo: {
-              "@type": "ImageObject",
-              url: "https://maugowes.com/static/icons/icon-512x512.png",
-              height: "500",
-              width: "500",
-            },
-          },
-          url: `https://maugowes.com/videos/${this.props.id}`,
-          datePublished: new Date(data.publishedDate).toISOString(),
-          dateCreated: new Date(data.publishedDate).toISOString(),
-          dateModified: new Date(data.publishedDate).toISOString(),
-          description: data.description,
-          author: {
-            "@type": "Organization",
-            name: "Mau Gowes",
+        wordcount: data.description.length,
+        publisher: {
+          "@type": "Organization",
+          name: "Mau Gowes",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://maugowes.com/static/icons/icon-512x512.png",
+            height: "500",
+            width: "500",
           },
         },
+        url: `https://maugowes.com/videos/${props.id}`,
+        datePublished: new Date(data.publishedDate).toISOString(),
+        dateCreated: new Date(data.publishedDate).toISOString(),
+        dateModified: new Date(data.publishedDate).toISOString(),
+        description: data.description,
+        author: {
+          "@type": "Organization",
+          name: "Mau Gowes",
+        },
+      },
+    }
+  } else {
+    if (!data.status) {
+      metadata = {
+        title: "Video loading...",
+        description: "Tunggu sejenak, memproses video...",
       }
     } else {
-      if (!data.status) {
-        metadata = {
-          title: "Video loading...",
-          description: "Tunggu sejenak, memproses video...",
-        }
-      } else {
-        metadata = {
-          title: "Video tidak ditemukan",
-          description:
-            "Maaf video yang kamu tuju tidak ditemukan, silahkan cek url sekali lagi, bisa juga karena video telah di hapus.",
-        }
+      metadata = {
+        title: "Video tidak ditemukan",
+        description:
+          "Maaf video yang kamu tuju tidak ditemukan, silahkan cek url sekali lagi, bisa juga karena video telah di hapus.",
       }
     }
-
-    return (
-      <GlobalLayout metadata={metadata}>
-        <DefaultLayout>
-          <VideoDetailStyled>
-            {data.satus ? (
-              <Loader />
-            ) : data.status === 200 ? (
-              <React.Fragment>
-                {/* video detail */}
-                <div className="grid-center">
-                  <div className="col-7_xs-12">
-                    <Breadcrumb position="left" breadcrumb={BreadcrumbData} />
-                    <div className="video-title">
-                      <h1>{data.title}</h1>
-                      <div className="video-meta">
-                        Diposting {Dayjs(data.publishedDate).fromNow()}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="video-player">
-                  <iframe
-                    title={`embed video ${data.title}`}
-                    src={`https://youtube.com/embed/${data.id}`}
-                    frameBorder={0}
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-
-                <GA
-                  style={{ margin: "30px 0" }}
-                  adClient="ca-pub-4468477322781117"
-                  adSlot="2754181340"
-                />
-
-                <div className="grid-center">
-                  <div className="col-7_xs-12">
-                    <p
-                      style={{
-                        lineHeight: 1.8,
-                        wordBreak: "break-all",
-                        padding: "25px 0 0",
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: nl2br(data.description),
-                      }}
-                    />
-
-                    <div className="grid" id="share-box">
-                      <div className="col-12">
-                        <ShareBox
-                          url={`https://maugowes.com/videos/${this.props.id}`}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* end of video detail */}
-
-                <VideoSSBox title="Video Lainnya" data={relatedData} />
-
-                <GA
-                  style={{ marginBottom: 0 }}
-                  adClient="cca-pub-4468477322781117"
-                  adSlot="2754181340"
-                />
-
-                <div className="m-t-50" />
-
-                <div className="grid-center" id="comment-box">
-                  <div className="col-7_xs-12 blog-detail_comment">
-                    {this.state.windowReady ? (
-                      <DisqusBox
-                        url={`${window.location.origin}/videos/${this.props.id}`}
-                        identifier={`maugowes-video-${id}`}
-                      />
-                    ) : null}
-                  </div>
-                </div>
-              </React.Fragment>
-            ) : (
-              <Loader text={data.messages} />
-            )}
-            {/* end of comment */}
-          </VideoDetailStyled>
-        </DefaultLayout>
-      </GlobalLayout>
-    )
   }
+
+  // function to fetch video detail
+  // const fetchVideoDetail = () => {
+  //   const id = getId(props.id)
+  //   const videoDetail = props.videos.id || {}
+
+  //   if (!videoDetail.status) {
+  //     props.dispatch(fetchVideoDetail(id))
+  //   }
+  // }
+
+  return (
+    <GlobalLayout metadata={metadata}>
+      <DefaultLayout>
+        <VideoDetailStyled>
+          {data.satus ? (
+            <Loader />
+          ) : data.status === 200 ? (
+            <>
+              {/* video detail */}
+              <div className="grid-center">
+                <div className="col-7_xs-12">
+                  <Breadcrumb position="left" breadcrumb={BreadcrumbData} />
+                  <div className="video-title">
+                    <h1>{data.title}</h1>
+                    <div className="video-meta">
+                      Diposting {Dayjs(data.publishedDate).fromNow()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="video-player">
+                <iframe
+                  title={`embed video ${data.title}`}
+                  src={`https://youtube.com/embed/${data.id}?autoplay=1`}
+                  frameBorder={0}
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+
+              <GA
+                style={{ margin: "30px 0" }}
+                adClient="ca-pub-4468477322781117"
+                adSlot="2754181340"
+              />
+
+              <div className="grid-center">
+                <div className="col-7_xs-12">
+                  <p
+                    style={{
+                      lineHeight: 1.8,
+                      wordBreak: "break-all",
+                      padding: "25px 0 0",
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: nl2br(data.description),
+                    }}
+                  />
+
+                  <div className="grid" id="share-box">
+                    <div className="col-12">
+                      <ShareBox
+                        url={`https://maugowes.com/videos/${props.id}`}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* end of video detail */}
+
+              <VideoSSBox title="Video Lainnya" data={relatedData} />
+
+              <GA
+                style={{ marginBottom: 0 }}
+                adClient="cca-pub-4468477322781117"
+                adSlot="2754181340"
+              />
+
+              <div className="m-t-50" />
+
+              <div className="grid-center" id="comment-box">
+                <div className="col-7_xs-12 blog-detail_comment">
+                  {windowReady ? (
+                    <DisqusBox
+                      url={`${window.location.origin}/videos/${props.id}`}
+                      identifier={`maugowes-video-${id}`}
+                    />
+                  ) : null}
+                </div>
+              </div>
+            </>
+          ) : (
+            <Loader text={data.messages} />
+          )}
+          {/* end of comment */}
+        </VideoDetailStyled>
+      </DefaultLayout>
+    </GlobalLayout>
+  )
+}
+
+VideoDetail.getInitialProps = async ({ req, reduxStore, query }) => {
+  if (req) {
+    const id = getId(query.id)
+    await reduxStore.dispatch(fetchVideoDetail(id))
+  }
+
+  return { id: query.id }
 }
 
 const mapsStateToProps = (state) => {

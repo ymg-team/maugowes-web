@@ -1,4 +1,3 @@
-import React from "react"
 import Styled from "styled-components"
 // ref: https://github.com/YouCanBookMe/react-datetime
 import DateTime from "react-datetime"
@@ -244,36 +243,32 @@ text-align: left;
     }
   }`
 
-class InputDateTime extends React.Component {
-  changeHandler(e) {
+const InputDateTime = (props) => {
+  const { id, name, label } = props
+
+  const changeHandler = (e) => {
     const value = moment(e).unix() * 1000
-    this.props.setState({ [this.props.name]: value })
+    props.setState({ [name]: value })
   }
 
-  render() {
-    const { id, name, label } = this.props
-
-    return (
-      <InputDateTimeStyled
-        style={this.props.customStyle}
-        className={`form-child`}>
-        {label ? (
-          <label htmlFor={id || name}>
-            {label} {this.props.required ? "*" : ""}
-          </label>
-        ) : null}
-        <DateTime
-          id={id || name}
-          defaultValue={this.props.defaultValue}
-          onChange={e => this.changeHandler(e)}
-          isValidDate={current => {
-            var yesterday = moment().subtract( 1, 'day' )
-            return current.isAfter( yesterday )
-          }}
-        />
-      </InputDateTimeStyled>
-    )
-  }
+  return (
+    <InputDateTimeStyled style={props.customStyle} className={`form-child`}>
+      {label ? (
+        <label htmlFor={id || name}>
+          {label} {props.required ? "*" : ""}
+        </label>
+      ) : null}
+      <DateTime
+        id={id || name}
+        defaultValue={props.defaultValue}
+        onChange={(e) => changeHandler(e)}
+        isValidDate={(current) => {
+          var yesterday = moment().subtract(1, "day")
+          return current.isAfter(yesterday)
+        }}
+      />
+    </InputDateTimeStyled>
+  )
 }
 
 export default InputDateTime

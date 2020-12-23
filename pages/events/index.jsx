@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Styled from "styled-components"
 import { connect } from "react-redux"
 import { progressBar } from "../../modules/loaders"
@@ -16,115 +16,106 @@ const EventsStyled = Styled.div`
 
 `
 const MaxResults = 12
-const StoreFilter = "list"
-class Events extends React.Component {
-  state = {
-    page: 1,
+
+const Events = (props) => {
+  const [page, setPage] = useState(1)
+  const [query, setQuery] = useState(props.query)
+
+  const StoreFilter = `list_${query.show_all || 0}`
+  const events = props.events[StoreFilter] || {}
+
+  const Breadcrumb = [
+    {
+      link: "/",
+      title: "Home",
+    },
+    {
+      link: "/events",
+      title: "Events",
+    },
+  ]
+
+  if (events.status) progressBar.stop()
+
+  const metadata = {
+    title: "Events - Mau Gowes",
+    description: "Kumpulan info race, tour gowes se Indonesia",
   }
 
-  static async getInitialProps({ req, reduxStore, query }) {
-    if (req) {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      progressBar.start()
+      if (!events.status && !events.is_loading) {
+        const reqQuery = requestQueryGenerator(query)
+        props.dispatch(fetchEvents(StoreFilter, reqQuery))
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!events.status && !events.is_loading) {
       const reqQuery = requestQueryGenerator(query)
-      await reduxStore.dispatch(fetchEvents(StoreFilter, reqQuery))
+      props.dispatch(fetchEvents(StoreFilter, reqQuery))
     }
+  }, [props.query])
 
-    return {
-      query,
-    }
-  }
+  const _loadMoreHandler = () => {
+    if (!events.is_loading && events.status == 200) {
+      setPage(page + 1)
+      let reqQuery = {
+        limit: MaxResults,
+        page: page + 1,
+        show_all: query.show_all || 0,
+      }
+      if (props.tag) reqQuery.tag = props.tag
 
-  state = {
-    query: this.props.query,
-  }
-
-  componentDidMount() {
-    progressBar.start()
-    const eventState = this.props.events[StoreFilter] || {}
-    this.setState(this.props.query)
-    if (!eventState.status && !eventState.is_loading) {
-      const reqQuery = requestQueryGenerator(this.props.query)
-      this.props.dispatch(fetchEvents(StoreFilter, reqQuery))
+      props.dispatch(fetchMoreEvents(StoreFilter, reqQuery))
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.query.show_all !== this.props.query.show_all) {
-      const reqQuery = requestQueryGenerator(this.props.query)
-      this.props.dispatch(fetchEvents(StoreFilter, reqQuery))
-    }
+  return (
+    <GlobalLayout metadata={metadata}>
+      <DefaultLayout>
+        <EventsStyled>
+          <Header
+            breadcrumb={Breadcrumb}
+            title="Events - Mau Gowes"
+            text={metadata.description}
+            stats={{
+              suffix: "events",
+              total: events.total || 0,
+              show:
+                events.results && events.results.length
+                  ? events.results.length
+                  : 0,
+            }}
+          />
+          <EventsBox
+            data={events}
+            loadmoreHandler={() => _loadMoreHandler()}
+            noHeaderTitle
+            maxResults={MaxResults}
+            useFilter
+            setState={(n) => {
+              setQuery(n)
+            }}
+            query={query}
+          />
+        </EventsStyled>
+      </DefaultLayout>
+    </GlobalLayout>
+  )
+}
+
+Events.getInitialProps = async ({ req, reduxStore, query }) => {
+  if (req) {
+    const StoreFilter = `list_${query.show_all || 0}`
+    const reqQuery = requestQueryGenerator(query)
+    await reduxStore.dispatch(fetchEvents(StoreFilter, reqQuery))
   }
 
-  _loadMoreHandler() {
-    const eventState = this.props.events[StoreFilter] || {}
-    if (!eventState.is_loading && eventState.status == 200) {
-      this.setState(
-        {
-          page: this.state.page + 1,
-        },
-        async () => {
-          let reqQuery = {
-            limit: MaxResults,
-            page: this.state.page,
-          }
-          if (this.props.tag) reqQuery.tag = this.props.tag
-
-          return this.props.dispatch(fetchMoreEvents(StoreFilter, reqQuery))
-        }
-      )
-    }
-  }
-
-  render() {
-    const events = this.props.events[StoreFilter] || {}
-
-    const Breadcrumb = [
-      {
-        link: "/",
-        title: "Home",
-      },
-      {
-        link: "/events",
-        title: "Events",
-      },
-    ]
-
-    if (events.status) progressBar.stop()
-
-    const metadata = {
-      title: "Events - Mau Gowes",
-      description: "Kumpulan info race, tour gowes se Indonesia",
-    }
-
-    return (
-      <GlobalLayout metadata={metadata}>
-        <DefaultLayout>
-          <EventsStyled>
-            <Header
-              breadcrumb={Breadcrumb}
-              title="Events - Mau Gowes"
-              text={metadata.description}
-              stats={{
-                suffix: "events",
-                total: events.total || 0,
-                show:
-                  events.results && events.results.length
-                    ? events.results.length
-                    : 0,
-              }}
-            />
-            <EventsBox
-              data={events}
-              loadmoreHandler={() => this._loadmoreHandler()}
-              noHeaderTitle
-              maxResults={MaxResults}
-              useFilter
-              setState={(n, cb) => this.setState(n, cb)}
-              query={this.state.query}
-            />
-          </EventsStyled>
-        </DefaultLayout>
-      </GlobalLayout>
-    )
+  return {
+    query,
   }
 }
 

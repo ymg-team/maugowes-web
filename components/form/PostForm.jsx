@@ -28,6 +28,10 @@ class BlogPage extends React.Component {
         video: blogData.video,
         image_preview: blogData.image.original,
       })
+    } else {
+      this.setState({
+        tags: [],
+      })
     }
   }
 

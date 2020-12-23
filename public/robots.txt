@@ -1,2 +1,9 @@
 User-agent: *
 Disallow: /super/
+Disallow: /author/[username]
+Disallow: /bikes/[id]
+Disallow: /bikes/compare/[id]
+Disallow: /blog/[id]
+Disallow: /blog/tag/[id]
+Disallow: /events/[id]
+Disallow: /videos/[id]

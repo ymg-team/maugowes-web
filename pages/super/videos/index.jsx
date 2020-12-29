@@ -10,7 +10,7 @@ import PageHeader from "../../../components/boxs/PageHeader"
 import VideoBox from "../../../components/super/boxs/VideoBox"
 import { requestQueryGenerator } from "../../videos/index"
 
-const MaxResults = 6
+const MaxResults = 9
 let StoreFilter = "super"
 
 class VideoList extends React.Component {

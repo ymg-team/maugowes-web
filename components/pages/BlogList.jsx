@@ -1,5 +1,4 @@
-import { useEffect, useState, useRef } from "react"
-import Styled from "styled-components"
+import { useEffect } from "react"
 import { connect } from "react-redux"
 import { fetchBlog, fetchMoreBlog } from "../../redux/blog/actions"
 import { toSlug } from "string-manager"
@@ -13,10 +12,6 @@ import DefaultLayout from "../../components/layouts/Default"
 import Header from "../../components/boxs/FullWidthHeader"
 import BlogBox from "../../components/boxs/BlogBox"
 
-const BlogStyled = Styled.div`
-
-`
-
 const Breadcrumb = [
   {
     link: "/",
@@ -29,14 +24,13 @@ const Breadcrumb = [
 ]
 
 const StoreFilter = "list"
-const MaxResults = 12
+const MaxResults = 9
+let Page = 1
 
 const Blog = (props) => {
-  const [page, setPage] = useState(1)
   const { tag, username, query } = props
   const Filter = filterGenerator(query)
   const blogState = props.blog[Filter] || {}
-  const firstUpdate = useRef(true)
 
   // metadata generator
   let title = "Blog - Mau Gowes"
@@ -46,6 +40,17 @@ const Blog = (props) => {
     title = `Postingan dari "${username}" - Mau Gowes`
   }
 
+  // componentDidMount and componentWillUnmount Handlers
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      document.addEventListener("scroll", loadMoreHandler)
+    }
+
+    return () => {
+      document.removeEventListener("scroll", loadMoreHandler)
+    }
+  }, [])
+
   useEffect(() => {
     if (!blogState.status && !blogState.is_loading) {
       if (typeof window !== "undefined") progressBar.start()
@@ -54,26 +59,29 @@ const Blog = (props) => {
     }
   }, [query])
 
-  // listen page change
-  useEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false
-      return
-    }
+  // loadmore handler
+  const loadMoreHandler = (e) => {
+    // if scroll almost bottom
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight / 1.5
+    ) {
+      if (!blogState.is_loading && blogState.status == 200) {
+        // you're at the almost bottom of the page
+        Page = Page + 1
 
-    const Filter = filterGenerator(query)
-    const blogState = props.blog[Filter] || {}
-    if (!blogState.is_loading && blogState.status == 200) {
-      let reqQuery = {
-        limit: MaxResults,
-        page,
+        let reqQuery = {
+          limit: MaxResults,
+          page: Page,
+        }
+        if (tag) reqQuery.tag = this.props.tag
+
+        props.dispatch(fetchMoreBlog(Filter, reqQuery))
       }
-      if (tag) reqQuery.tag = this.props.tag
-
-      props.dispatch(fetchMoreBlog(Filter, reqQuery))
     }
-  }, [page])
+  }
 
+  // stop page loader stop
   if (blogState.status) progressBar.stop()
 
   return (
@@ -83,7 +91,7 @@ const Blog = (props) => {
         description: `${title}. Baca postingan terupdate seputar dunia pergowesan`,
       }}>
       <DefaultLayout>
-        <BlogStyled>
+        <>
           <Header
             breadcrumb={Breadcrumb}
             title={title}
@@ -101,9 +109,11 @@ const Blog = (props) => {
             noHeaderTitle
             maxResults={MaxResults}
             data={blogState}
-            loadmoreHandler={() => setPage(page + 1)}
+            // loadmoreHandler={() => {
+            //   setPage(page + 1)
+            // }}
           />
-        </BlogStyled>
+        </>
       </DefaultLayout>
     </GlobalLayout>
   )

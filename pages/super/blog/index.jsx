@@ -16,7 +16,7 @@ import BlogBox from "../../../components/super/boxs/BlogBox"
 const BlogPageStyled = Styled.div`
 
 `
-const MaxResults = 6
+const MaxResults = 9
 let StoreFilter = "super"
 
 class BlogPage extends React.Component {

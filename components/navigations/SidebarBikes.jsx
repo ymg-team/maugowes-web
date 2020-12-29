@@ -32,12 +32,11 @@ const SidebarBikes = (props) => {
   const { query } = props
 
   const [q, setQ] = useState(query.q)
-  const [brand, setBrand] = useState(query.brand)
-  const [type, setType] = useState(query.type)
   const [minPrice, setMinPrice] = useState(query.min_price || 0)
   const [maxPrice, setMaxPrice] = useState(query.max_price || 0)
 
   const changeHandler = (e) => {
+    e.preventDefault()
     const { name, value } = e.target
     let { query } = props
     if (value == 0) {
@@ -54,8 +53,8 @@ const SidebarBikes = (props) => {
   const selectRender = (dataKey) => {
     const { status, results } = props[dataKey] || {}
     if (status && status == 200) {
-      return results.map((n, key) => (
-        <option key={key} value={n.id}>
+      return results.map((n) => (
+        <option key={n.id} value={n.id}>
           {n.name}
         </option>
       ))
@@ -104,7 +103,7 @@ const SidebarBikes = (props) => {
               <select
                 name="brand"
                 onChange={(e) => changeHandler(e)}
-                value={brand}>
+                value={query.brand || "0"}>
                 <option value={"0"}>Pilih Brand Sepeda</option>
                 {selectRender("bikeBrands")}
               </select>
@@ -116,7 +115,7 @@ const SidebarBikes = (props) => {
               <select
                 name="type"
                 onChange={(e) => changeHandler(e)}
-                value={type}>
+                value={query.type || "0"}>
                 <option value={"0"}>Pilih Jenis Sepeda</option>
                 {selectRender("bikeTypes")}
               </select>

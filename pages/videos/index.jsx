@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { connect } from "react-redux"
 import { fetchVideos, fetchMoreVideos } from "../../redux/videos/actions"
 import { progressBar } from "../../modules/loaders"
@@ -10,7 +10,8 @@ import Header from "../../components/boxs/FullWidthHeader"
 import VideosBox from "../../components/boxs/VideosBox"
 
 const StoreFilter = "list"
-const MaxResults = 12
+const MaxResults = 9
+let Page = 1
 
 const Breadcrumb = [
   {
@@ -24,39 +25,47 @@ const Breadcrumb = [
 ]
 
 const VideosPage = (props) => {
-  const [page, setPage] = useState(1)
-
   const videos = props.videos[StoreFilter] || {}
+
   if (videos.status) {
     progressBar.stop()
   }
 
-  const loadmoreHandler = () => {
-    const videosState = props.videos.list || {}
-    if (!videosState.is_loading && videosState.status == 200) {
-      const nextPage = page + 1
-
-      setPage(nextPage)
-
-      let reqQuery = {
-        limit: MaxResults,
-        page: nextPage,
-      }
-
-      props.dispatch(fetchMoreVideos(StoreFilter, reqQuery))
-    }
-  }
-
+  // componentDidMount and componentWillUnmount Handlers
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const videos = props.videos[StoreFilter] || {}
       if (!videos.status) progressBar.start()
       if (!videos.status && !videos.loading) {
         let query = requestQueryGenerator()
         props.dispatch(fetchVideos(StoreFilter, query))
       }
+
+      document.addEventListener("scroll", loadMoreHandler)
+    }
+
+    return () => {
+      document.removeEventListener("scroll", loadMoreHandler)
     }
   }, [])
+
+  const loadMoreHandler = (e) => {
+    // if scroll almost bottom
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight / 1.5
+    ) {
+      if (!videos.is_loading && videos.status == 200) {
+        Page = Page + 1
+
+        let reqQuery = {
+          limit: MaxResults,
+          page: Page,
+        }
+
+        props.dispatch(fetchMoreVideos(StoreFilter, reqQuery))
+      }
+    }
+  }
 
   return (
     <GlobalLayout
@@ -82,7 +91,7 @@ const VideosPage = (props) => {
           />
           <VideosBox
             data={videos}
-            loadmoreHandler={() => loadmoreHandler()}
+            // loadmoreHandler={() => loadmoreHandler()}
             maxResults={MaxResults}
             noHeaderTitle
           />

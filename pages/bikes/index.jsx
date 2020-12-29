@@ -43,7 +43,7 @@ const MetaData = {
   description: "Kumpulan sepeda dan spesifikasinya.",
 }
 
-const MaxResults = 12
+const MaxResults = 9
 
 export function requestQueryGenerator(query = {}) {
   let reqQuery = {

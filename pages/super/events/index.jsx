@@ -9,7 +9,7 @@ import SuperLayout from "../../../components/layouts/Super"
 import PageHeader from "../../../components/boxs/PageHeader"
 import EventBox from "../../../components/super/boxs/EventBox"
 
-const MaxResults = 6
+const MaxResults = 9
 let StoreFilter = "super"
 
 class EventLists extends React.Component {

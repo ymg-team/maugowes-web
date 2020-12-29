@@ -15,10 +15,11 @@ import { fetchEvents, fetchMoreEvents } from "../../redux/events/actions"
 const EventsStyled = Styled.div`
 
 `
-const MaxResults = 12
+
+let Page = [1, 1]
+const MaxResults = 9
 
 const Events = (props) => {
-  const [page, setPage] = useState(1)
   const [query, setQuery] = useState(props.query)
 
   const StoreFilter = `list_${query.show_all || 0}`
@@ -45,12 +46,40 @@ const Events = (props) => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       progressBar.start()
+
       if (!events.status && !events.is_loading) {
         const reqQuery = requestQueryGenerator(query)
         props.dispatch(fetchEvents(StoreFilter, reqQuery))
       }
+
+      // scroll listener
+      document.addEventListener("scroll", loadMoreHandler)
+    }
+
+    return () => {
+      document.removeEventListener("scroll", loadMoreHandler)
     }
   }, [])
+
+  //load more handler
+  const loadMoreHandler = () => {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight / 1.5
+    ) {
+      if (!events.is_loading && events.status == 200) {
+        Page[query.show_all || 0] = Page[query.show_all || 0] + 1
+        let reqQuery = {
+          limit: MaxResults,
+          page: Page[query.show_all || 0],
+          show_all: query.show_all || 0,
+        }
+        if (props.tag) reqQuery.tag = props.tag
+
+        props.dispatch(fetchMoreEvents(StoreFilter, reqQuery))
+      }
+    }
+  }
 
   useEffect(() => {
     if (!events.status && !events.is_loading) {
@@ -58,20 +87,6 @@ const Events = (props) => {
       props.dispatch(fetchEvents(StoreFilter, reqQuery))
     }
   }, [props.query])
-
-  const _loadMoreHandler = () => {
-    if (!events.is_loading && events.status == 200) {
-      setPage(page + 1)
-      let reqQuery = {
-        limit: MaxResults,
-        page: page + 1,
-        show_all: query.show_all || 0,
-      }
-      if (props.tag) reqQuery.tag = props.tag
-
-      props.dispatch(fetchMoreEvents(StoreFilter, reqQuery))
-    }
-  }
 
   return (
     <GlobalLayout metadata={metadata}>
@@ -92,7 +107,6 @@ const Events = (props) => {
           />
           <EventsBox
             data={events}
-            loadmoreHandler={() => _loadMoreHandler()}
             noHeaderTitle
             maxResults={MaxResults}
             useFilter
@@ -121,7 +135,7 @@ Events.getInitialProps = async ({ req, reduxStore, query }) => {
 
 export function requestQueryGenerator(query = {}) {
   let reqQuery = {
-    page: 1,
+    page: Page[query.show_all || 0],
     limit: MaxResults,
     status: "accept",
     show_all: query.show_all || 0,

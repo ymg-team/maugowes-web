@@ -75,7 +75,7 @@ const Home = (props) => {
           <br />
           <BikesBox hideAds data={newBikes} size={"large"} />
           <div className="grid-center p-t-30 p-b-50">
-            <Button type="link" target="/bikes" text="Bikes Lainnya" />
+            <Button type="link" target="/bikes" text="Sepeda Lainnya" />
           </div>
           {/* end of bikes */}
 

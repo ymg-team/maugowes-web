@@ -118,11 +118,11 @@ const AvailableMenu = [
     pathname: "bikes",
     link: "/bikes",
   },
-  {
-    name: "Build a Bike",
-    pathname: "builder",
-    link: "/builder",
-  },
+  // {
+  //   name: "Build a Bike",
+  //   pathname: "builder",
+  //   link: "/builder",
+  // },
   {
     name: "Events",
     pathname: "events",

@@ -37,8 +37,15 @@ module.exports = {
     // custom aggregate
     // post by tag
     if (tag) {
+      const tagArr = tag.split(',')
+      const arr = []
+      tagArr.forEach(element => {
+        arr.push({
+          tags: { $regex: ".*" + element + ".*" },
+        })
+      });
       aggregate.push({
-        $match: { tags: { $regex: ".*" + tag + ".*" } },
+        $match: { $or: arr }
       })
     }
 
@@ -101,7 +108,7 @@ module.exports = {
                 .toArray((err, results) => {
                   // error from database
                   if (err) {
-                    console.err(err)
+                    console.error(err)
                     return callback({
                       status: 500,
                       messages: "something wrong with mongo",

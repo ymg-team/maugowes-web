@@ -22,6 +22,8 @@ const MaxResults = 9
 const Events = (props) => {
   const [query, setQuery] = useState(props.query)
 
+  const [almostBottom, setAlmostBottom] = useState(false)
+
   const StoreFilter = `list_${query.show_all || 0}`
   const events = props.events[StoreFilter] || {}
 
@@ -61,24 +63,25 @@ const Events = (props) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (almostBottom && !events.is_loading && events.status == 200) {
+      Page[query.show_all || 0] = Page[query.show_all || 0] + 1
+      let reqQuery = {
+        limit: MaxResults,
+        page: Page[query.show_all || 0],
+        show_all: query.show_all || 0,
+      }
+      if (props.tag) reqQuery.tag = props.tag
+
+      props.dispatch(fetchMoreEvents(StoreFilter, reqQuery))
+    }
+  }, [almostBottom])
+
   //load more handler
   const loadMoreHandler = () => {
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight / 1.5
-    ) {
-      if (!events.is_loading && events.status == 200) {
-        Page[query.show_all || 0] = Page[query.show_all || 0] + 1
-        let reqQuery = {
-          limit: MaxResults,
-          page: Page[query.show_all || 0],
-          show_all: query.show_all || 0,
-        }
-        if (props.tag) reqQuery.tag = props.tag
-
-        props.dispatch(fetchMoreEvents(StoreFilter, reqQuery))
-      }
-    }
+    return setAlmostBottom(
+      window.innerHeight + window.scrollY >= document.body.offsetHeight / 1.5
+    )
   }
 
   useEffect(() => {

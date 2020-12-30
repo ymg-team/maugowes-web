@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import { fetchVideos, fetchMoreVideos } from "../../redux/videos/actions"
 import { progressBar } from "../../modules/loaders"
@@ -25,6 +25,7 @@ const Breadcrumb = [
 ]
 
 const VideosPage = (props) => {
+  const [almostBottom, setAlmostBottom] = useState(false)
   const videos = props.videos[StoreFilter] || {}
 
   if (videos.status) {
@@ -39,7 +40,6 @@ const VideosPage = (props) => {
         let query = requestQueryGenerator()
         props.dispatch(fetchVideos(StoreFilter, query))
       }
-
       document.addEventListener("scroll", loadMoreHandler)
     }
 
@@ -48,23 +48,24 @@ const VideosPage = (props) => {
     }
   }, [])
 
-  const loadMoreHandler = (e) => {
-    // if scroll almost bottom
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight / 1.5
-    ) {
-      if (!videos.is_loading && videos.status == 200) {
-        Page = Page + 1
+  // listen on scrolling
+  useEffect(() => {
+    if (almostBottom && !videos.is_loading && videos.status == 200) {
+      Page = Page + 1
 
-        let reqQuery = {
-          limit: MaxResults,
-          page: Page,
-        }
-
-        props.dispatch(fetchMoreVideos(StoreFilter, reqQuery))
+      let reqQuery = {
+        limit: MaxResults,
+        page: Page,
       }
+
+      props.dispatch(fetchMoreVideos(StoreFilter, reqQuery))
     }
+  }, [almostBottom])
+
+  const loadMoreHandler = (e) => {
+    return setAlmostBottom(
+      window.innerHeight + window.scrollY >= document.body.offsetHeight / 1.5
+    )
   }
 
   return (

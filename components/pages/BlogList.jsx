@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { fetchBlog, fetchMoreBlog } from "../../redux/blog/actions"
 import { toSlug } from "string-manager"
@@ -29,6 +29,7 @@ let Page = 1
 
 const Blog = (props) => {
   const { tag, username, query } = props
+  const [almostBottom, setAlmostBottom] = useState(false)
   const Filter = filterGenerator(query)
   const blogState = props.blog[Filter] || {}
 
@@ -59,26 +60,26 @@ const Blog = (props) => {
     }
   }, [query])
 
+  useEffect(() => {
+    if (almostBottom && !blogState.is_loading && blogState.status == 200) {
+      // you're at the almost bottom of the page
+      Page = Page + 1
+
+      let reqQuery = {
+        limit: MaxResults,
+        page: Page,
+      }
+      if (tag) reqQuery.tag = this.props.tag
+
+      props.dispatch(fetchMoreBlog(Filter, reqQuery))
+    }
+  }, [almostBottom])
+
   // loadmore handler
   const loadMoreHandler = (e) => {
-    // if scroll almost bottom
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight / 1.5
-    ) {
-      if (!blogState.is_loading && blogState.status == 200) {
-        // you're at the almost bottom of the page
-        Page = Page + 1
-
-        let reqQuery = {
-          limit: MaxResults,
-          page: Page,
-        }
-        if (tag) reqQuery.tag = this.props.tag
-
-        props.dispatch(fetchMoreBlog(Filter, reqQuery))
-      }
-    }
+    return setAlmostBottom(
+      window.innerHeight + window.scrollY >= document.body.offsetHeight / 1.5
+    )
   }
 
   // stop page loader stop

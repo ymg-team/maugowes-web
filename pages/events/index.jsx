@@ -16,7 +16,6 @@ const EventsStyled = Styled.div`
 
 `
 
-let Page = [1, 1]
 const MaxResults = 9
 
 const Events = (props) => {
@@ -65,10 +64,11 @@ const Events = (props) => {
 
   useEffect(() => {
     if (almostBottom && !events.is_loading && events.status == 200) {
-      Page[query.show_all || 0] = Page[query.show_all || 0] + 1
+      const NextPage = Math.floor(events.results.length / MaxResults) + 1
+
       let reqQuery = {
         limit: MaxResults,
-        page: Page[query.show_all || 0],
+        page: NextPage,
         show_all: query.show_all || 0,
       }
       if (props.tag) reqQuery.tag = props.tag
@@ -138,7 +138,7 @@ Events.getInitialProps = async ({ req, reduxStore, query }) => {
 
 export function requestQueryGenerator(query = {}) {
   let reqQuery = {
-    page: Page[query.show_all || 0],
+    page: 1,
     limit: MaxResults,
     status: "accept",
     show_all: query.show_all || 0,

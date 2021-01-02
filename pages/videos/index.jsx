@@ -51,11 +51,11 @@ const VideosPage = (props) => {
   // listen on scrolling
   useEffect(() => {
     if (almostBottom && !videos.is_loading && videos.status == 200) {
-      Page = Page + 1
+      const NextPage = Math.floor(videos.results.length / MaxResults) + 1
 
       let reqQuery = {
         limit: MaxResults,
-        page: Page,
+        page: NextPage,
       }
 
       props.dispatch(fetchMoreVideos(StoreFilter, reqQuery))

@@ -70,7 +70,8 @@ const BikesIndex = (props) => {
   const { bikes, query } = props
   const reqQuery = requestQueryGenerator(query)
 
-  const [page, setPage] = useState(1)
+  const [almostBottom, setAlmostBottom] = useState(false)
+
   const [bikeFilter, setBikeFilter] = useState(bikeFilterGenerator(reqQuery))
   let { title, description } = MetaData
 
@@ -79,7 +80,6 @@ const BikesIndex = (props) => {
   const bikesState = bikes[bikeFilter] || {}
 
   const firstUpdate = useRef(true)
-  const oldPage = useRef(page)
   const oldBikeFilter = useRef(bikeFilter)
 
   useEffect(() => {
@@ -91,8 +91,33 @@ const BikesIndex = (props) => {
       if (typeof window !== "undefined") progressBar.start()
       props.dispatch(fetchBikes(bikeFilter, reqQuery))
     }
+
+    // scroll listener
+    document.addEventListener("scroll", loadMoreHandler)
+
+    return () => {
+      document.removeEventListener("scroll", loadMoreHandler)
+    }
   }, [])
 
+  //load more handler
+  const loadMoreHandler = () => {
+    return setAlmostBottom(
+      window.innerHeight + window.scrollY >= document.body.offsetHeight / 1.5
+    )
+  }
+
+  // loadmore on scroll
+  useEffect(() => {
+    if (almostBottom && !bikesState.is_loading && bikesState.status === 200) {
+      const NextPage = Math.floor(bikesState.results.length / MaxResults) + 1
+      let reqQuery = requestQueryGenerator(query)
+      reqQuery.page = NextPage
+      props.dispatch(fetchBikes(bikeFilter, reqQuery))
+    }
+  }, [almostBottom])
+
+  // listen updated http query
   useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false
@@ -111,16 +136,7 @@ const BikesIndex = (props) => {
         props.dispatch(fetchBikes(bikeFilter, reqQuery))
       }
     }
-
-    if (oldPage.current != page) {
-      oldPage.current = page
-      if (!bikeData.is_loading && bikeData.status == 200) {
-        let reqQuery = requestQueryGenerator(query)
-        reqQuery.page = page
-        props.dispatch(fetchBikes(bikeFilter, reqQuery))
-      }
-    }
-  }, [bikeFilter, page])
+  }, [bikeFilter])
 
   // meta data generator
   if (query.q) {
@@ -177,9 +193,6 @@ const BikesIndex = (props) => {
             <div className="content col-9_md-8_xs-12">
               <BikesBox
                 data={bikesState}
-                loadmoreHandler={() => {
-                  setPage(page + 1)
-                }}
                 maxResults={MaxResults}
                 noHeaderTitle
               />

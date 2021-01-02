@@ -25,7 +25,6 @@ const Breadcrumb = [
 
 const StoreFilter = "list"
 const MaxResults = 9
-let Page = 1
 
 const Blog = (props) => {
   const { tag, username, query } = props
@@ -63,11 +62,12 @@ const Blog = (props) => {
   useEffect(() => {
     if (almostBottom && !blogState.is_loading && blogState.status == 200) {
       // you're at the almost bottom of the page
-      Page = Page + 1
+
+      const NextPage = Math.floor(blogState.results.length / MaxResults) + 1
 
       let reqQuery = {
         limit: MaxResults,
-        page: Page,
+        page: NextPage,
       }
       if (tag) reqQuery.tag = this.props.tag
 

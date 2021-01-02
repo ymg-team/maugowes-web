@@ -84,23 +84,6 @@ const VideoDetail = (props) => {
     // same as componentDidMount
     if (typeof window !== "undefined" && !windowReady) {
       setWindowReady(true)
-      // fetch video detail from api
-      if (!data.status) {
-        props.dispatch(fetchVideoDetail(id))
-      }
-      // fetch video related
-      const videoRelatedState = props.videos.related || {}
-
-      if (!videoRelatedState.status) {
-        progressBar.start()
-        props.dispatch(
-          fetchVideos("related", {
-            limit: 4,
-            page: 1,
-            notId: getId(props.id),
-          })
-        )
-      }
     }
   }, [])
 
@@ -108,6 +91,20 @@ const VideoDetail = (props) => {
   useEffect(() => {
     if (!data.status) {
       props.dispatch(fetchVideoDetail(id))
+    }
+
+    // fetch video related
+    const videoRelatedState = props.videos.related || {}
+
+    if (!videoRelatedState.status) {
+      progressBar.start()
+      props.dispatch(
+        fetchVideos("related", {
+          limit: 4,
+          page: 1,
+          notId: getId(props.id),
+        })
+      )
     }
   }, [id])
 
@@ -182,16 +179,6 @@ const VideoDetail = (props) => {
       }
     }
   }
-
-  // function to fetch video detail
-  // const fetchVideoDetail = () => {
-  //   const id = getId(props.id)
-  //   const videoDetail = props.videos.id || {}
-
-  //   if (!videoDetail.status) {
-  //     props.dispatch(fetchVideoDetail(id))
-  //   }
-  // }
 
   return (
     <GlobalLayout metadata={metadata}>

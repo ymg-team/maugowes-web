@@ -36,7 +36,6 @@ const SidebarBikes = (props) => {
   const [maxPrice, setMaxPrice] = useState(query.max_price || 0)
 
   const changeHandler = (e) => {
-    e.preventDefault()
     const { name, value } = e.target
     let { query } = props
     if (value == 0) {

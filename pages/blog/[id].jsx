@@ -4,11 +4,7 @@ import { useEffect } from "react"
 
 // redux
 import { connect } from "react-redux"
-import {
-  fetchBlogDetail,
-  fetchBlog,
-  fetchMoreBlog,
-} from "../../redux/blog/actions"
+import { fetchBlogDetail, fetchBlog } from "../../redux/blog/actions"
 
 // modules
 import Dayjs from "../../modules/dayjs"
@@ -168,15 +164,22 @@ const BlogDetail = ({ id, dispatch, blog }) => {
 
   // fetch blog data
   const blogData = blog[id] || {}
-  if (!blogData.status && !blogData.is_loading) {
-    dispatch(fetchBlogDetail(id))
-  }
-
   const blogRelated = blog[RelatedFilter] || {}
 
   //every change id
   useEffect(() => {
-    if (blogData.status === 200 && process.browser) {
+    const blogData = blog[id] || {}
+    if (!blogData.status && !blogData.is_loading) {
+      dispatch(fetchBlogDetail(id))
+    }
+  }, [id])
+
+  // listen blog data already fetched
+  useEffect(() => {
+    const blogData = blog[id] || {}
+    const blogRelated = blog[RelatedFilter] || {}
+
+    if (blogData.status && !blogRelated.is_loading && !blogRelated.status) {
       dispatch(
         fetchBlog(RelatedFilter, {
           limit: 4,
@@ -186,7 +189,7 @@ const BlogDetail = ({ id, dispatch, blog }) => {
         })
       )
     }
-  }, [id])
+  }, [blog])
 
   let metadata = {}
 

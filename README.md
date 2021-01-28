@@ -48,6 +48,10 @@ npm run test
 
 - https://redux.js.org/recipes/writing-tests
 
+## Things To Learn
+
+- Next JS 10 : https://nextjs.org/
+
 ## Colaborator
 
 - yussan

@@ -12,7 +12,7 @@ const ShareBoxStyled = Styled.div`
     }
 `
 
-export default ({ url }) => (
+const Share = ({ url }) => (
   <ShareBoxStyled className="share-box">
     <strong className="box-share-title">Bagikan ke: </strong>
     <br />
@@ -66,3 +66,5 @@ export default ({ url }) => (
     {/* end of linkedin share */}
   </ShareBoxStyled>
 )
+
+export default Share

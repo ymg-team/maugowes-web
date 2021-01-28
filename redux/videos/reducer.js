@@ -1,14 +1,10 @@
-import {
-  GET_VIDEOS,
-  GET_MORE_VIDEOS,
-  SUBMIT_VIDEO
-} from "./actions"
+import { GET_VIDEOS, GET_MORE_VIDEOS, SUBMIT_VIDEO } from "./actions"
 import {
   receiveDataByFilter,
-  receiveMoreDataByFilter
+  receiveMoreDataByFilter,
 } from "../modules/reducerHandler"
 
-export default (state = {}, action) => {
+const VideosReducer = (state = {}, action) => {
   if (!state[action.filter]) state[action.filter] = {}
 
   switch (action.type) {
@@ -23,3 +19,5 @@ export default (state = {}, action) => {
       return state
   }
 }
+
+export default VideosReducer

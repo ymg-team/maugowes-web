@@ -1,8 +1,7 @@
-import React from "react"
 import Styled from "styled-components"
 import { color_gray_medium, color_gray_dark, color_black_main } from "../Const"
 
-export const Footer = Styled.div`
+export const FooterStyled = Styled.div`
   padding: 80px 0;
   border-top: 1px solid ${color_gray_medium};
   border-bottom: 1px solid ${color_gray_medium};
@@ -90,10 +89,10 @@ const FooterPoweredBy = Styled.div`
 
 `
 
-export default (props) => {
+const Footer = () => {
   return (
-    <React.Fragment>
-      <Footer className="grid">
+    <>
+      <FooterStyled className="grid">
         <div className="col-4_xs-12 footer-left">
           <img
             className="footer-left-logo"
@@ -213,13 +212,15 @@ export default (props) => {
             </div>
           </div>
         </div>
-      </Footer>
+      </FooterStyled>
       <FooterPoweredBy>
         Powered by{" "}
         <a href="https://byymg.com" target="_blank" rel="noopener noreferer">
           Yussan Media Group
         </a>
       </FooterPoweredBy>
-    </React.Fragment>
+    </>
   )
 }
+
+export default Footer

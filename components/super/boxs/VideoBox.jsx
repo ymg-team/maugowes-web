@@ -4,20 +4,11 @@ import Table from "../tables/TableWrapper"
 import VideoRow from "../tables/rows/VideoRow"
 import Loader from "../../Loader"
 
-function generateStats(results, total) {
-  return (
-    <React.Fragment>
-      Menampilkan <strong>{results.length || 0}</strong> dari{" "}
-      <strong>{total}</strong> post
-    </React.Fragment>
-  )
-}
-
-export default (props) => {
+const BoxVideo = (props) => {
   const { results, status, message, stats, is_loading, total } = props.data
 
   return (
-    <React.Fragment>
+    <>
       {results && results.length && total && !props.noStats ? (
         <React.Fragment>
           Menampilkan <strong>{results.length || 0}</strong> dari{" "}
@@ -52,6 +43,8 @@ export default (props) => {
           />
         </div>
       ) : null}
-    </React.Fragment>
+    </>
   )
 }
+
+export default BoxVideo

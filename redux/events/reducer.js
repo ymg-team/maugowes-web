@@ -1,10 +1,10 @@
 import { GET_EVENTS, GET_MORE_EVENTS, SUBMIT_FORM } from "./actions"
 import {
   receiveDataByFilter,
-  receiveMoreDataByFilter
+  receiveMoreDataByFilter,
 } from "../modules/reducerHandler"
 
-export default (state = {}, action) => {
+const EventsReducer = (state = {}, action) => {
   if (!state[action.filter]) state[action.filter] = {}
 
   switch (action.type) {
@@ -19,3 +19,5 @@ export default (state = {}, action) => {
       return state
   }
 }
+
+export default EventsReducer

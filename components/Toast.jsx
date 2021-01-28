@@ -1,5 +1,4 @@
 import Styled from "styled-components"
-import Toast from "../modules/toast"
 import { color_black_main } from "./Const"
 
 const ToastStyled = Styled.div`
@@ -18,6 +17,8 @@ const ToastStyled = Styled.div`
   }
 `
 
-export default () => {
+const ToastComponent = () => {
   return <ToastStyled id="mg-toast" />
 }
+
+export default ToastComponent

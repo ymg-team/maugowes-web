@@ -84,7 +84,7 @@ const SliderContent = [
   },
 ]
 
-export default () => {
+const SliderContentComponent = () => {
   return SliderContent.map((n, key) => (
     <CardHomeSlidderStyled className="grid" key={key}>
       <div
@@ -107,3 +107,5 @@ export default () => {
     </CardHomeSlidderStyled>
   ))
 }
+
+export default SliderContentComponent

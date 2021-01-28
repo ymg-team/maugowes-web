@@ -4,7 +4,7 @@ import toast from "../../modules/toast"
 
 export const CALL_API = "CALL_API"
 
-export default (store) => (next) => (action) => {
+const ReqApiMiddleware = (store) => (next) => (action) => {
   return new Promise((resolve, reject) => {
     //action no requset data from server
     if (!action[CALL_API]) {
@@ -76,3 +76,5 @@ function formdataGenerator(params) {
 
   return formdata
 }
+
+export default ReqApiMiddleware

@@ -1,4 +1,4 @@
-export default ({ width, height }) => (
+const UpArrow = ({ width, height }) => (
   <svg
     version="1.1"
     id="Capa_1"
@@ -37,3 +37,5 @@ export default ({ width, height }) => (
     <g></g>
   </svg>
 )
+
+export default UpArrow

@@ -1,10 +1,10 @@
-import { GET_BLOG, GET_MORE_BLOG, SUBMIT_FORM } from './actions'
+import { GET_BLOG, GET_MORE_BLOG, SUBMIT_FORM } from "./actions"
 import {
   receiveDataByFilter,
-  receiveMoreDataByFilter
-} from '../modules/reducerHandler'
+  receiveMoreDataByFilter,
+} from "../modules/reducerHandler"
 
-export default (state = {}, action) => {
+const BlogReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_BLOG:
     case SUBMIT_FORM:
@@ -17,3 +17,5 @@ export default (state = {}, action) => {
       return state
   }
 }
+
+export default BlogReducer

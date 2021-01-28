@@ -1,9 +1,8 @@
 import Styled from "styled-components"
-import Link from "next/link"
 import { color_gray_dark, color_black_main, color_red_main } from "../Const"
 import Button from "../buttons/index"
 
-const RowProduct = Styled.div`
+const RowProductStyled = Styled.div`
   padding-bottom: 20px !important;
   margin-bottom: 30px !important;
   border-bottom: 1px solid ${color_gray_dark};
@@ -44,15 +43,15 @@ const RowProduct = Styled.div`
   }
 `
 
-export default (props) => {
+const RowProduct = () => {
   return (
-    <RowProduct className="grid">
+    <RowProductStyled className="grid">
       <div className="col-3 row-product-left">
         <img src="/static/images/dummies/product-1.jpg" alt="product image" />
       </div>
       <div className="col-9 row-product-right">
         <div>
-          <React.Fragment>
+          <>
             <h2>Stem Zipp Course SL</h2>
             <div className="row-product-right_price">Rp800.000</div>
             <div className="row-product-right_rating">
@@ -97,9 +96,11 @@ export default (props) => {
               size="small"
               color="black"
             />
-          </React.Fragment>
+          </>
         </div>
       </div>
-    </RowProduct>
+    </RowProductStyled>
   )
 }
+
+export default RowProduct

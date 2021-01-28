@@ -1,7 +1,7 @@
 import { receiveDataByFilter } from "../modules/reducerHandler"
 import { GET_GROUP_SPEC } from "./actions"
 
-export default (state = {}, action) => {
+const GroupSpecsReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_GROUP_SPEC:
       return receiveDataByFilter(state, action)
@@ -9,3 +9,5 @@ export default (state = {}, action) => {
       return state
   }
 }
+
+export default GroupSpecsReducer

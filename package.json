@@ -22,7 +22,7 @@
     "html-to-draftjs": "^1.4.0",
     "moment": "^2.24.0",
     "mongodb": "^3.2.3",
-    "next": "^9.3.3",
+    "next": "^10.0.5",
     "next-routes": "^1.4.2",
     "nodemailer": "^6.4.2",
     "react": "^16.8.3",

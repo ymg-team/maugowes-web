@@ -73,7 +73,7 @@ const CardBlogStyled = Styled.div`
   }
 `
 
-export default (props) => {
+const CardBlog = (props) => {
   const { data = {}, size } = props || {}
   const linkUrl = data.link
   return (
@@ -118,3 +118,5 @@ export default (props) => {
     </CardBlogStyled>
   )
 }
+
+export default CardBlog

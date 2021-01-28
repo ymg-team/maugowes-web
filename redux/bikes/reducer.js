@@ -4,7 +4,7 @@ import {
   receiveMoreDataByFilter,
 } from "../modules/reducerHandler"
 
-export default (state = {}, action) => {
+const BikesReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_BIKE:
     case SUBMIT_BIKE:
@@ -15,3 +15,5 @@ export default (state = {}, action) => {
       return state
   }
 }
+
+export default BikesReducer

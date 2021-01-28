@@ -1,6 +1,6 @@
 import { LOGIN } from "./actions"
 
-export default (state = {}, action) => {
+const AuthReducer = (state = {}, action) => {
   switch (action.type) {
     case LOGIN:
       if (action.data && action.data.status) {
@@ -14,3 +14,5 @@ export default (state = {}, action) => {
       return state
   }
 }
+
+export default AuthReducer

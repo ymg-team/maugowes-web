@@ -5,7 +5,7 @@ import ThanksTo from "../boxs/ThanksToFooter"
 import ProgressBar from "../loaders/ProgressBar"
 import ScrollToTop from "../buttons/ScrollToTop"
 
-export default (props) => {
+const LayoutDefault = (props) => {
   return (
     <>
       <ProgressBar />
@@ -19,3 +19,4 @@ export default (props) => {
     </>
   )
 }
+export default LayoutDefault

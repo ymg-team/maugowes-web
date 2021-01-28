@@ -4,11 +4,11 @@ import Table from "../tables/TableWrapper"
 import Loader from "../../Loader"
 import EventRow from "../tables/rows/EventRow"
 
-export default (props) => {
+const EventBox = (props) => {
   const { results, status, is_loading, total } = props.data
 
   return (
-    <React.Fragment>
+    <>
       {results && results.length && total && !props.noStats ? (
         <React.Fragment>
           Menampilkan <strong>{results.length || 0}</strong> dari{" "}
@@ -43,6 +43,8 @@ export default (props) => {
           />
         </div>
       ) : null}
-    </React.Fragment>
+    </>
   )
 }
+
+export default EventBox

@@ -59,7 +59,7 @@ const LoaderStyled = Styled.div`
   }
 `
 
-export default (props) => {
+const Loader = (props) => {
   return (
     <LoaderStyled size={props.size} className="grid-center">
       {props.text ? (
@@ -72,3 +72,5 @@ export default (props) => {
     </LoaderStyled>
   )
 }
+
+export default Loader

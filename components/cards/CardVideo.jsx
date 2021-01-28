@@ -79,7 +79,7 @@ const VideoCard = Styled.div`
 }
 `
 
-export default (props) => {
+const CardVideo = (props) => {
   const { data = {}, size } = props || {}
   return (
     <div
@@ -120,3 +120,5 @@ export default (props) => {
     </div>
   )
 }
+
+export default CardVideo

@@ -1,4 +1,4 @@
-export default ({ width, height }) => {
+const Search = ({ width, height }) => {
   return (
     <svg
       width={width}
@@ -14,3 +14,5 @@ export default ({ width, height }) => {
     </svg>
   )
 }
+
+export default Search

@@ -78,7 +78,7 @@ export default class MyDocument extends Document {
           <Toast />
 
           {/* service worker initial */}
-          <script
+          {/* <script
             dangerouslySetInnerHTML={{
               __html: `
               if ("serviceWorker" in navigator) {
@@ -102,7 +102,7 @@ export default class MyDocument extends Document {
               }
             
             `,
-            }}></script>
+            }}></script> */}
           {/* end of service worker initial */}
         </body>
       </Html>

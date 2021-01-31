@@ -125,7 +125,7 @@ const HomeLayout = (props) => {
         ) : null}
         {scripts.length > 0
           ? scripts.map((n, key) => {
-              return <script src={n.src} key={key} />
+              return <script src={n.src} key={key} id={n.id || ""} />
             })
           : null}
         {process.env.NODE_ENV === "production" ? (

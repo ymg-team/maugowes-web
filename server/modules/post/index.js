@@ -37,15 +37,15 @@ module.exports = {
     // custom aggregate
     // post by tag
     if (tag) {
-      const tagArr = tag.split(',')
+      const tagArr = tag.split(",")
       const arr = []
-      tagArr.forEach(element => {
+      tagArr.forEach((element) => {
         arr.push({
           tags: { $regex: ".*" + element + ".*" },
         })
-      });
+      })
       aggregate.push({
-        $match: { $or: arr }
+        $match: { $or: arr },
       })
     }
 
@@ -279,8 +279,10 @@ module.exports = {
     }
 
     // upload image
+    // generate upload directory from title
     const filename = file.encName(image)
-    const upload_path = `maugowes/${new Date().getFullYear()}/${filename}`
+    const titleDir = title.replace(/\s/g, "-").toLowerCase()
+    const upload_path = `maugowes/${new Date().getFullYear()}/${titleDir}/${filename}`
 
     return cloudinary.upload(image.path, upload_path, (err, result) => {
       if (err) {
@@ -387,7 +389,8 @@ module.exports = {
     if (image) {
       // upload new image to cloudinary
       const filename = file.encName(image)
-      const upload_path = `maugowes/${new Date().getFullYear()}/${filename}`
+      const titleDir = title.replace(/\s/g, "-").toLowerCase()
+      const upload_path = `maugowes/${new Date().getFullYear()}/${titleDir}/${filename}`
       return cloudinary.upload(image.path, upload_path, (err, result) => {
         if (err) {
           console.err("cloudinary error", err)

@@ -6,6 +6,8 @@ const DaysJs = require("dayjs")
 
 // handler of /feed/videos
 module.exports.videosFeed = (req, res) => {
+  // always hide draft
+  req.query.showDraft = false
   return videoModule.fetchVideos(req, res, (json) => {
     if (json.status === 200) {
       res.set("Content-Type", "text/xml")
@@ -59,6 +61,8 @@ module.exports.videosFeed = (req, res) => {
 
 // handle of /feed/posts
 module.exports.postsFeed = (req, res) => {
+  // always hide draft
+  req.query.showDraft = false
   return postModule.fetchPosts(req, res, (json) => {
     if (json.status === 200) {
       res.set("Content-Type", "text/xml")

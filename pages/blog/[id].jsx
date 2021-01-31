@@ -172,6 +172,18 @@ const BlogDetail = ({ id, dispatch, blog }) => {
     if (!blogData.status && !blogData.is_loading) {
       dispatch(fetchBlogDetail(id))
     }
+    setTimeout(
+      () => {
+        DISQUSWIDGETS.getCount({
+          reset: true,
+          config: function () {
+            this.page.identifier = `maugowes-${id}`
+            // this.page.url = `https://maugowes.com/blog/${id}`
+          },
+        })
+      },
+      window.DISQUSWIDGETS ? 1500 : 0
+    )
   }, [id])
 
   // listen blog data already fetched
@@ -253,9 +265,15 @@ const BlogDetail = ({ id, dispatch, blog }) => {
     }
   }
 
+  // init scripts
+  const scripts = [
+    { src: "https://maugowes.disqus.com/count.js", id: "dsq-count-scr" },
+    { src: "https://maugowes.disqus.com/embed.js" },
+  ]
+
   // render the component
   return (
-    <GlobalLayout metadata={metadata}>
+    <GlobalLayout scripts={scripts} metadata={metadata}>
       <DefaultLayout>
         <BlogDetailStyled className="blog-detail">
           {!blogData.status ? (
@@ -319,7 +337,12 @@ const BlogDetail = ({ id, dispatch, blog }) => {
                         }}
                         href="javascript:;">
                         <CommentIcon width="30" height="30" />
-                        <span>0</span>
+                        <span
+                          className="disqus-comment-count"
+                          // data-disqus-url={`https://maugowes.com/blog/${id}`}
+                          data-disqus-identifier={`maugowes-${id}`}>
+                          0
+                        </span>
                       </a>
                     </span>
 
@@ -391,12 +414,10 @@ const BlogDetail = ({ id, dispatch, blog }) => {
               {/* comment */}
               <div className="grid-center" id="comment-box">
                 <div className="col-7_xs-12 blog-detail_comment">
-                  {typeof window !== "undefined" ? (
-                    <DisqusBox
-                      url={`${window.location.origin}/blog/${id}`}
-                      identifier={`maugowes-${id}`}
-                    />
-                  ) : null}
+                  <DisqusBox
+                    // url={`https://maugowes.com/blog/${id}`}
+                    identifier={`maugowes-${id}`}
+                  />
                 </div>
               </div>
               {/* end of comment */}

@@ -1,4 +1,4 @@
-import Document, { Head, Main, NextScript } from "next/document"
+import Document, { Head, Main, NextScript, Html } from "next/document"
 import { ServerStyleSheet } from "styled-components"
 import Toast from "../components/Toast"
 
@@ -22,7 +22,7 @@ export default class MyDocument extends Document {
 
   render() {
     return (
-      <html lang="id">
+      <Html lang="id">
         <Head>
           <meta property="fb:pages" content="250248599190287" />
           <meta
@@ -78,7 +78,7 @@ export default class MyDocument extends Document {
           <Toast />
 
           {/* service worker initial */}
-          <script
+          {/* <script
             dangerouslySetInnerHTML={{
               __html: `
               if ("serviceWorker" in navigator) {
@@ -102,10 +102,10 @@ export default class MyDocument extends Document {
               }
             
             `,
-            }}></script>
+            }}></script> */}
           {/* end of service worker initial */}
         </body>
-      </html>
+      </Html>
     )
   }
 }

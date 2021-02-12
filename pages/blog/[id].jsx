@@ -174,13 +174,17 @@ const BlogDetail = ({ id, dispatch, blog }) => {
     }
     setTimeout(
       () => {
-        DISQUSWIDGETS.getCount({
-          reset: true,
-          config: function () {
-            this.page.identifier = `maugowes-${id}`
-            // this.page.url = `https://maugowes.com/blog/${id}`
-          },
-        })
+        try {
+          DISQUSWIDGETS.getCount({
+            reset: true,
+            config: function () {
+              this.page.identifier = `maugowes-${id}`
+              // this.page.url = `https://maugowes.com/blog/${id}`
+            },
+          })
+        } catch (e) {
+          console.error(e)
+        }
       },
       window.DISQUSWIDGETS ? 1500 : 0
     )
@@ -374,7 +378,7 @@ const BlogDetail = ({ id, dispatch, blog }) => {
                   </div>
                 )}
 
-                <div className="col-7_xs-12">
+                <div className="col-12" style={{ padding: 0 }}>
                   <GA
                     style={{ margin: "30px 0" }}
                     adClient="ca-pub-4468477322781117"

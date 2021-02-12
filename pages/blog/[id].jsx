@@ -384,7 +384,9 @@ const BlogDetail = ({ id, dispatch, blog }) => {
                     adClient="ca-pub-4468477322781117"
                     adSlot="4316048838"
                   />
+                </div>
 
+                <div className="col-7_xs-12">
                   <article
                     className="blog-detail_content"
                     dangerouslySetInnerHTML={{ __html: blogData.content }}

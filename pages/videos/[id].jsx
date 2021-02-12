@@ -199,25 +199,27 @@ const VideoDetail = (props) => {
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="video-player">
-                <iframe
-                  title={`embed video ${data.title}`}
-                  src={`https://youtube.com/embed/${data.id}?autoplay=1`}
-                  frameBorder={0}
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
+                <div className="col-12">
+                  <div className="video-player">
+                    <iframe
+                      title={`embed video ${data.title}`}
+                      src={`https://youtube.com/embed/${data.id}?autoplay=1`}
+                      frameBorder={0}
+                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
 
-              <GA
-                style={{ margin: "30px 0" }}
-                adClient="ca-pub-4468477322781117"
-                adSlot="2754181340"
-              />
+                <div className="col-12" style={{ padding: 0 }}>
+                  <GA
+                    style={{ margin: "30px 0" }}
+                    adClient="ca-pub-4468477322781117"
+                    adSlot="2754181340"
+                  />
+                </div>
 
-              <div className="grid-center">
                 <div className="col-7_xs-12">
                   <p
                     style={{

@@ -88,6 +88,12 @@ const HeaderStyled = Styled.header`
 
         .header-menu__right {
           padding-left: 30px;
+          a {
+            margin-right: 30px;
+            &:last-child {
+              margin-right: 0;
+            }
+          }
         }
     }
   
@@ -212,6 +218,9 @@ const Header = () => {
             title="Pencarian Mau Gowes">
             <IconSearch width={25} height={25} />
           </a>
+          <Link href="/login">
+            <a>Login</a>
+          </Link>
         </div>
       </div>
     </HeaderStyled>

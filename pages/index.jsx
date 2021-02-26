@@ -60,12 +60,12 @@ const Home = (props) => {
           </div> */}
           {/* end of newest products */}
 
-          {/* videos */}
-          <VideosBox hideAds data={newVideos} />
+          {/* blog */}
+          <BlogBox hideAds data={newBlog} />
           <div className="grid-center p-t-30 p-b-50">
-            <Button type="link" target="/videos" text="Lihat Video" />
+            <Button type="link" target="/blog" text="Baca Blog" />
           </div>
-          {/* end of videos */}
+          {/* end of blog */}
 
           {/* banner of youtube and bike shop */}
           <BannerBox />
@@ -85,12 +85,12 @@ const Home = (props) => {
             adSlot="2131764851"
           />
 
-          {/* blog */}
-          <BlogBox hideAds data={newBlog} />
+          {/* videos */}
+          <VideosBox hideAds data={newVideos} />
           <div className="grid-center p-t-30 p-b-50">
-            <Button type="link" target="/blog" text="Baca Blog" />
+            <Button type="link" target="/videos" text="Lihat Video" />
           </div>
-          {/* end of blog */}
+          {/* end of videos */}
         </>
       </DefaultLayout>
     </GlobalLayout>

@@ -111,6 +111,7 @@ typings/
 
 # next.js build output
 .next
+_next
 
 # nuxt.js build output
 .nuxt

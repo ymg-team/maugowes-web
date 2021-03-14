@@ -30,6 +30,8 @@ import CommentIcon from "../../components/icons/Comment"
 import EyeIcon from "../../components/icons/Eye"
 import Breadcrumb from "../../components/navigations/Breadcrumb"
 
+let DisqusIntv
+
 function getId(title) {
   let titleArr = title.split("-")
   return titleArr[titleArr.length - 1]
@@ -172,8 +174,9 @@ const BlogDetail = ({ id, dispatch, blog }) => {
     if (!blogData.status && !blogData.is_loading) {
       dispatch(fetchBlogDetail(id))
     }
-    setTimeout(
-      () => {
+    DisqusIntv = setInterval(() => {
+      if (typeof window.DISQUSWIDGETS !== "undefined") {
+        clearInterval(DisqusIntv)
         try {
           DISQUSWIDGETS.getCount({
             reset: true,
@@ -183,11 +186,10 @@ const BlogDetail = ({ id, dispatch, blog }) => {
             },
           })
         } catch (e) {
-          console.error(e)
+          console.error("DISQUESWIDGETS", e)
         }
-      },
-      window.DISQUSWIDGETS ? 1500 : 0
-    )
+      }
+    }, 1000)
   }, [id])
 
   // listen blog data already fetched
